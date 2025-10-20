@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>KMU Station Assignment & Clinic System</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header id="system-health" class="health-bar">
+    <div id="connectivity" class="badge">Checking...</div>
+    <div id="user-status" class="badge">Offline</div>
+    <div class="spacer"></div>
+    <label class="switch">
+      <input id="theme-toggle" type="checkbox" />
+      <span class="slider"></span>
+    </label>
+    <select id="lang-select" aria-label="Language select">
+      <option value="en">English</option>
+      <option value="bemba">Bemba</option>
+      <option value="nyanja">Nyanja</option>
+    </select>
+  </header>
+
+  <main>
+    <!-- LOGIN / SWITCH -->
+    <section id="login-section" class="card">
+      <h2>Login</h2>
+      <div class="role-switch">
+        <button class="role-btn active" data-role="admin">Admin</button>
+        <button class="role-btn" data-role="supervisor">Supervisor</button>
+        <button class="role-btn" data-role="clinic">Clinic</button>
+      </div>
+
+      <form id="login-form">
+        <input type="email" id="login-email" placeholder="Email" required />
+        <input type="password" id="login-password" placeholder="Password" required />
+        <div class="login-actions">
+          <button type="submit">Login</button>
+          <button id="to-register" type="button">Register (Admin only)</button>
+        </div>
+        <div id="login-error" class="error"></div>
+      </form>
+    </section>
+
+    <!-- ADMIN DASHBOARD -->
+    <section id="admin-dashboard" class="dashboard hidden">
+      <nav class="dash-nav">
+        <button class="nav-btn" data-show="admin-users">Users</button>
+        <button class="nav-btn" data-show="admin-resources">Resources</button>
+        <button class="nav-btn" data-show="admin-analytics">Analytics</button>
+        <button class="nav-btn" data-show="admin-chat">Chat</button>
+        <button id="admin-logout" class="danger">Logout</button>
+      </nav>
+
+      <div id="admin-views">
+        <div id="admin-users" class="dash-view">
+          <h3>User Management</h3>
+          <div class="form-grid">
+            <div>
+              <h4>Register Supervisor</h4>
+              <input id="sup-name" placeholder="Name" />
+              <input id="sup-id" placeholder="ID" />
+              <input id="sup-email" placeholder="Email" />
+              <input id="sup-pass" placeholder="Password" />
+              <input id="sup-sec-q" placeholder="Security Question" />
+              <input id="sup-sec-a" placeholder="Security Answer" />
+              <button id="register-supervisor">Register Supervisor</button>
+            </div>
+            <div>
+              <h4>Register Clinic Staff</h4>
+              <input id="clinic-name" placeholder="Name" />
+              <input id="clinic-role" placeholder="Role (Nurse/Doctor)" />
+              <input id="clinic-id" placeholder="ID" />
+              <input id="clinic-email" placeholder="Email" />
+              <input id="clinic-pass" placeholder="Password" />
+              <button id="register-clinic">Register Clinic Staff</button>
+            </div>
+            <div>
+              <h4>Register Student</h4>
+              <input id="stu-name" placeholder="Student Name" />
+              <input id="stu-id" placeholder="Student ID" />
+              <input id="stu-program" placeholder="Program of Study" />
+              <input id="stu-year" placeholder="Year of Study" />
+              <input id="stu-hostel" placeholder="Hostel" />
+              <input id="stu-cliniccard" placeholder="Clinic Card No" />
+              <input id="stu-age" placeholder="Age" />
+              <input id="stu-phone" placeholder="Phone" />
+              <button id="register-student">Register Student</button>
+            </div>
+          </div>
+
+          <h4>Existing Supervisors / Clinic Staff</h4>
+          <div id="users-list"></div>
+        </div>
+
+        <div id="admin-resources" class="dash-view hidden">
+          <h3>Digital Resources</h3>
+          <p>Manage resources (placeholder).</p>
+        </div>
+
+        <div id="admin-analytics" class="dash-view hidden">
+          <h3>Analytics</h3>
+          <p>Usage charts & reports (placeholder).</p>
+        </div>
+
+        <div id="admin-chat" class="dash-view hidden">
+          <h3>Chat (Admin ↔ Others)</h3>
+          <div id="admin-chat-list"></div>
+          <div id="admin-chat-box" class="chat-box hidden">
+            <div id="admin-messages" class="messages"></div>
+            <input id="admin-chat-input" placeholder="Type message..." />
+            <button id="admin-send">Send</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUPERVISOR DASHBOARD -->
+    <section id="supervisor-dashboard" class="dashboard hidden">
+      <nav class="dash-nav">
+        <button class="nav-btn" data-show="sup-stations">Stations</button>
+        <button class="nav-btn" data-show="sup-issues">Report Issue</button>
+        <button class="nav-btn" data-show="sup-chat">Chat</button>
+        <button id="sup-logout" class="danger">Logout</button>
+      </nav>
+
+      <div id="sup-views">
+        <div id="sup-stations" class="dash-view">
+          <h3>Station Management</h3>
+          <div id="station-controls">
+            <input id="assign-stu-id" placeholder="Student ID" />
+            <select id="station-select"></select>
+            <button id="assign-station">Assign Station</button>
+          </div>
+
+          <h4>Stations Overview</h4>
+          <div id="stations-list" class="stations-grid"></div>
+
+          <h4>Session Codes History</h4>
+          <div id="codes-history"></div>
+        </div>
+
+        <div id="sup-issues" class="dash-view hidden">
+          <h3>Report Issue</h3>
+          <textarea id="issue-text" placeholder="Describe issue"></textarea>
+          <button id="report-issue">Report</button>
+        </div>
+
+        <div id="sup-chat" class="dash-view hidden">
+          <h3>Chat with Admin</h3>
+          <div id="sup-chat-list"></div>
+          <div id="sup-chat-box" class="chat-box hidden">
+            <div id="sup-messages" class="messages"></div>
+            <input id="sup-chat-input" placeholder="Type message..." />
+            <button id="sup-send">Send</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLINIC DASHBOARD -->
+    <section id="clinic-dashboard" class="dashboard hidden">
+      <nav class="dash-nav">
+        <button class="nav-btn" data-show="clinic-patients">Patients</button>
+        <button class="nav-btn" data-show="clinic-roster">Duty Roster</button>
+        <button class="nav-btn" data-show="clinic-chat">Chat</button>
+        <button id="clinic-logout" class="danger">Logout</button>
+      </nav>
+
+      <div id="clinic-views">
+        <div id="clinic-patients" class="dash-view">
+          <h3>Patient Management</h3>
+          <input id="fetch-stu" placeholder="Enter Student ID or Name" />
+          <button id="fetch-student">Fetch Student</button>
+          <div id="patient-details"></div>
+        </div>
+
+        <div id="clinic-roster" class="dash-view hidden">
+          <h3>Duty Roster</h3>
+          <p>Manage weekly duties (placeholder).</p>
+        </div>
+
+        <div id="clinic-chat" class="dash-view hidden">
+          <h3>Chat with Admin</h3>
+          <div id="clinic-chat-list"></div>
+          <div id="clinic-chat-box" class="chat-box hidden">
+            <div id="clinic-messages" class="messages"></div>
+            <input id="clinic-chat-input" placeholder="Type message..." />
+            <button id="clinic-send">Send</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="firebase-config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
+
+
+
+
